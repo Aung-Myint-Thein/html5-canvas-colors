@@ -180,22 +180,6 @@ function processImage(original, picWidth){
       if(new_color){
         colors.push(new Array(imageData.data[i - 3], imageData.data[i - 2], imageData.data[i - 1], imageData.data[i], 1));
       }
-
-      // if transaparent color then set alpha to 0
-      if (imageData.data[i - 3] ==  106 &&
-          imageData.data[i - 2] ==  76  &&
-          imageData.data[i - 1] ==  48)
-      {
-          imageData.data[i] = 50;
-      }
-
-      // if shadow color then set alpha to 128 (50%)
-      else if (imageData.data[i - 3] == 39 &&
-               imageData.data[i - 2] == 27 &&
-               imageData.data[i - 1] == 17)
-      {
-          imageData.data[i] = 128;
-      }
   }
 
   //sort the colors by the counters
@@ -206,29 +190,20 @@ function processImage(original, picWidth){
   	return 0;
   });
 
-  //colors.sort()
-
-  //console.log(colors);
   var start = 0;
   for (var i = 0; i < colors.length; i++) {
     var end = start + colors[i][4]*4 - 1;
-    
-    //console.log(colors[i][0] + " " + colors[i][1] + " " + colors[i][2] + " real end : " + end);
+
     for (var j = start + 3; j < end; j += 4) {
-      //console.log("before "+ sortedImageData.data[i-3] + " " + sortedImageData.data[i-2] + " " + sortedImageData.data[i-1]);
       sortedImageData.data[j-3] =  colors[i][0];
       sortedImageData.data[j-2] =  colors[i][1];
       sortedImageData.data[j-1] =  colors[i][2];
       sortedImageData.data[j] =    colors[i][3];
-      //console.log("after" + sortedImageData.data[i-3] + " " + sortedImageData.data[i-2] + " " + sortedImageData.data[i-1]);
     };
     start = end + 1;
   };
 
   imageData = sortedImageData;
-
-  console.log(sortedImageData);
-  console.log(imageData);
 
   wctx.putImageData(imageData, 0, 0);
 
@@ -250,14 +225,14 @@ function processImage(original, picWidth){
 <div id="colorcodes">
 	<div id="main">
 		<h1>Get Colors from Image</h1>
-		<p>With the magic of HTML5 you can get colors from any image with this simple online tool. To use this new color tool it's recomended that you upgrade your web browser to the latest version.(For the full HTML5 support).</p>
+		<p>With the magic of HTML5 you can get colors from any image with this simple online tool. One major benefit of the tool is that images are not uploaded to server and they are just processed inside the browser. To use this new color tool it's recomended that you upgrade your web browser to the latest version.(For the full HTML5 support).</p>
 		<p><b>Step 1:</b> Select image from your computer and click "Show image" button. Scaled version of the image will show up.</p>
 		<p><b>Step 2:</b> Click anywhere on the image to choose an area. 9x9 pixels will be magnified in a small box.</p>
 		<p><b>Step 3:</b> Click anywhere in the small box to select desired color.</p>
 		<p><b>Step 4:</b> Click again on the image to choose another 9x9 pixels area.</p>
 <br />	
 <div id="insertcolor" style="width:612px;">
-<input style="float:left;" id="uploadImage" type="file" name="myPhoto" onchange="loadImageFile();" /><button onclick="myFunction()"> Show image </button>
+<input style="float:left;" id="uploadImage" type="file" name="myPhoto" onchange="loadImageFile();" /><button onclick="myFunction()"> Process image </button>
 </div>
 <p><b>Original image</b></p>
 <div style="width:622px;height:302px;position: relative;background-color: #FFFFFF;">
@@ -280,6 +255,10 @@ Each color from uploaded image is counted, sorted and printed out as following i
 <div style="width:622px;height:302px;position: relative;background-color: #FFFFFF;">
 	<canvas id="output" width="470" height="300" style="border:1px solid #d3d3d3;position: absolute; left: 0; top: 0; z-index: 0;">Your browser does not support the HTML5 canvas tag.</canvas>
 </div>
+
+<p><b>Colors percentage</b></p>
+<p>Choose the number of colors you want to see in percentage: <input id="numberOfColors" type="number" name="numberOfColors"></p>
+<div id="colors_percentages"></div>
 
 <p></p>
 <p><b>Credit</b></p>

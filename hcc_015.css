@@ -4,7 +4,7 @@ body,html{margin:0;padding:0;background:#e4e4e4;font:14px helvetica, arial, sans
 #flags{float:right;height:17px;margin-right:5px;}
 #colorcodes{width:981px;margin:0 auto;}
 #topad{float:right;width:728px;height:90px;margin:10px 5px 0px 0px;}
-#main{float:left;margin-left:30px;color:#4d4d4d;}
+#main{float:left;margin-left:30px;margin-right:30px;color:#4d4d4d;}
 #sidebar{float:right;width:300px;margin-right:10px;padding:0;}
 #sidebar iframe{margin-left:5px;margin-top:5px;}
 #sidebar ul {float:left;}
