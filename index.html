@@ -1,0 +1,140 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script type="text/javascript">
+  
+var g_mainScreen = null;
+  
+window.onload = onReady;
+  
+function onReady() {
+ g_mainScreen = document.getElementById("mainScreen").getContext("2d");
+ var img = new Image();
+ img.onload = function() {
+    g_mainScreen.drawImage(this, 0,0);
+    processImage(this);
+ };
+ img.src = "attack.png";
+ //img.src = "singapore-flag.png";
+ //img.src = "3 colors.png";
+}
+
+function processImage(original){
+  var workCanvas = document.createElement("canvas");
+  workCanvas.width = original.width;
+  workCanvas.height = original.height;
+
+  var wctx = workCanvas.getContext("2d");
+  wctx.drawImage(original, 0, 0);
+
+  var imageData = wctx.getImageData(0, 0, original.width, original.height);
+  var sortedImageData = imageData;
+  var length = imageData.data.length;
+  
+  //create colors 2 dimentions array
+  var colors = new Array(new Array());
+
+  colors[0][0] = imageData.data[0];
+  colors[0][1] = imageData.data[1];
+  colors[0][2] = imageData.data[2];
+  colors[0][3] = imageData.data[3];
+  colors[0][4] = 1; // counter
+
+  for (var i = 3; i < length; i += 4)
+  {
+      // check if the pixel color is the new color
+      // if no, counter +1
+      var new_color = true;
+      for(var j = 0; j < colors.length; j ++){
+        if (imageData.data[i - 3] ==  colors[j][0] &&
+            imageData.data[i - 2] ==  colors[j][1] &&
+            imageData.data[i - 1] ==  colors[j][2] &&
+            imageData.data[i]     ==  colors[j][3])
+        {
+            new_color = false;
+            colors[j][4] += 1;
+        }
+      }
+
+      //if new color, add and counter 1
+      if(new_color){
+        colors.push(new Array(imageData.data[i - 3], imageData.data[i - 2], imageData.data[i - 1], imageData.data[i], 1));
+      }
+
+      // if transaparent color then set alpha to 0
+      if (imageData.data[i - 3] ==  106 &&
+          imageData.data[i - 2] ==  76  &&
+          imageData.data[i - 1] ==  48)
+      {
+          imageData.data[i] = 50;
+      }
+
+      // if shadow color then set alpha to 128 (50%)
+      else if (imageData.data[i - 3] == 39 &&
+               imageData.data[i - 2] == 27 &&
+               imageData.data[i - 1] == 17)
+      {
+          imageData.data[i] = 128;
+      }
+  }
+
+  //console.log(colors);
+  var start = 0;
+  for (var i = 0; i < colors.length; i++) {
+    var end = start + colors[i][4]*4 - 1;
+    
+    //console.log(colors[i][0] + " " + colors[i][1] + " " + colors[i][2] + " real end : " + end);
+    for (var j = start + 3; j < end; j += 4) {
+      //console.log("before "+ sortedImageData.data[i-3] + " " + sortedImageData.data[i-2] + " " + sortedImageData.data[i-1]);
+      sortedImageData.data[j-3] =  colors[i][0];
+      sortedImageData.data[j-2] =  colors[i][1];
+      sortedImageData.data[j-1] =  colors[i][2];
+      sortedImageData.data[j] =    colors[i][3];
+      //console.log("after" + sortedImageData.data[i-3] + " " + sortedImageData.data[i-2] + " " + sortedImageData.data[i-1]);
+    };
+    start = end + 1;
+  };
+
+  imageData = sortedImageData;
+
+  console.log(sortedImageData);
+  console.log(imageData);
+
+  wctx.putImageData(imageData, 0, 0);
+
+  var g_mainScreen2 = document.getElementById("output").getContext("2d");
+  var img2 = new Image();
+
+  img2.onload = function()
+  {
+      g_mainScreen2.drawImage(this, 0, 0);
+  };
+
+  img2.src = workCanvas.toDataURL();
+}
+  
+</script>
+
+<title>HTML5 Test</title>
+</head>
+  
+<body>
+  
+<div>HTML5 Test!</div>
+
+Original Photo
+<canvas id="mainScreen" width="800" height="533">
+Canvas not supported!
+</canvas>
+
+<p></p>
+
+Output Photo
+<canvas id="output" width="800" height="533">
+Canvas not supported!
+</canvas>
+
+  
+</body>
+  
+</html>
