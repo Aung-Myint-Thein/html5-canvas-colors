@@ -225,11 +225,11 @@
 
   //function to get color statistics
   function getColorStats(){
-    var numsOfColors = document.getElementById("numberOfColors").value;
+    //var numsOfColors = document.getElementById("numberOfColors").value;
+    var numsOfColors = (colors.length >= document.getElementById("numberOfColors").value ? document.getElementById("numberOfColors").value : colors.length);
     var result = "";
 
     for (var i = 0; i < numsOfColors; i++) {
-      console.log(colors[i][4]);
       var color_code = "#"+d2h(colors[i][0])+d2h(colors[i][1])+d2h(colors[i][2]);
       result += "<p>Percentage of <canvas id=\"color"+(i+1)+"\" width=\"40\" height=\"10\" style=\"border:1px solid #d3d3d3; background-color:"+color_code+"\">OOps no sample color</canvas> : "+ (colors[i][4]*100 / totalPixels).toFixed(3) +"% </p>";
     };
